@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #define FILAS 15
 #define COLUMNAS 21
@@ -19,6 +20,8 @@ int inicioFantasmaFila[MAX_FANTASMAS], inicioFantasmaCol[MAX_FANTASMAS];
 int fantasmaDir[MAX_FANTASMAS], totalFantasmas;
 int puntos = 0, vidas = 3, pellets = 0, nivel = 1;
 bool jugando = true, victoria = false;
+SDL_Texture *pikachuTexture = NULL;
+SDL_Texture *gengarTexture = NULL;
 
 char mapasDefault[TOTAL_NIVELES][FILAS][COLUMNAS + 1] = {
     {
@@ -264,14 +267,46 @@ void renderizar(SDL_Renderer *renderer)
         }
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 230, 0, 255);
-    dibujarCirculo(renderer, jugadorCol * TAM + TAM / 2, jugadorFila * TAM + TAM / 2, 12);
+   SDL_Rect pikachuDestino = {
+    jugadorCol * TAM,
+    jugadorFila * TAM,
+    TAM,
+    TAM
+};
 
-    SDL_SetRenderDrawColor(renderer, 255, 60, 90, 255);
+SDL_Rect pikachuFrame = {
+    0,
+    0,
+    64,
+    64
+};
+
+SDL_RenderCopy(renderer,
+               pikachuTexture,
+               &pikachuFrame,
+               &pikachuDestino);
+
     for (i = 0; i < totalFantasmas; i++) {
-        SDL_Rect fantasma = {fantasmaCol[i] * TAM + 5, fantasmaFila[i] * TAM + 5, TAM - 10, TAM - 10};
-        SDL_RenderFillRect(renderer, &fantasma);
-    }
+
+    SDL_Rect gengarDestino = {
+        fantasmaCol[i] * TAM,
+        fantasmaFila[i] * TAM,
+        TAM,
+        TAM
+    };
+
+    SDL_Rect gengarFrame = {
+        0,
+        0,
+        64,
+        64
+    };
+
+    SDL_RenderCopy(renderer,
+                   gengarTexture,
+                   &gengarFrame,
+                   &gengarDestino);
+}
 
     SDL_RenderPresent(renderer);
 }
@@ -297,8 +332,33 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+    printf("Error SDL_image: %s\n", IMG_GetError());
+    return 1;
+}
+
     window = SDL_CreateWindow("Pac-Man", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    SDL_Surface *temp;
+
+temp = IMG_Load("pikachu.png");
+
+if (temp == NULL) {
+    printf("Error cargando pikachu.png: %s\n", IMG_GetError());
+} else {
+    pikachuTexture = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_FreeSurface(temp);
+}
+
+temp = IMG_Load("gengar.png");
+
+if (temp == NULL) {
+    printf("Error cargando gengar.png: %s\n", IMG_GetError());
+} else {
+    gengarTexture = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_FreeSurface(temp);
+}
 
     if (window == NULL || renderer == NULL) {
         printf("Error al crear ventana o renderer: %s\n", SDL_GetError());
@@ -357,6 +417,11 @@ int main(int argc, char **argv)
     }
 
     printf("Puntaje final: %d\n", puntos);
+
+    SDL_DestroyTexture(pikachuTexture);
+    SDL_DestroyTexture(gengarTexture);
+
+    IMG_Quit();
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
