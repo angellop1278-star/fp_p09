@@ -1,0 +1,6 @@
+lavadora    $15,000.00
+refrigerador    $20,000.00
+plancha $2,000.00
+licuadora   $3,000.00
+
+play5	12000.000000

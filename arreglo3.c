@@ -1,0 +1,21 @@
+#include <stdio.h>
+/*Este programa sirve permite trabajar con un arreglo a traves de un apuntador 
+Apuntador es una variable que almacena direccion de memoria del primer elemento
+El nombre de un arreglo*/
+int main(){
+    int array[10];
+    int *apuntador;
+    apuntador = array; //Asignando la direccion del primer elemento del array al apuntador 
+    //array = &array[0]; (Otra forma de hacerlo)
+     for(int i=0; i<10; ++i){
+        printf("Ingresa el valor del elemento %d: ", i);
+        //scanf (%d, &array[i]); (Representa la direccion de memoria del elemento i)
+        scanf("%d", (apuntador+i));
+    }
+    printf("[ ");
+     for(int i=0; i<10; ++i){
+        printf("%d  (%p),",/* Accede al valor del apuntador*/ *(apuntador + i), (apuntador+i)); //Caundo anteponemos un asterisco obtenemos el valor contenido en la direccion de memoria que guarda el apuntador
+    }
+    printf("]\n");
+    return 0;
+}
