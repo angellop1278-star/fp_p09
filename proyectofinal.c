@@ -229,14 +229,6 @@ void moverFantasmas(void)
     }
 }
 
-if(SDL_GetTicks() - ultimoFrame > 120)
-{
-    framePikachu = (framePikachu + 1) % 4;
-    frameGengar = (frameGengar + 1) % 3;
-
-    ultimoFrame = SDL_GetTicks();
-}
-
 void revisarColisiones(void)
 {
     int i;
@@ -421,7 +413,13 @@ if (temp == NULL) {
             }   
             }
         }
+if(SDL_GetTicks() - ultimoFrame > 120)
+{
+    framePikachu = (framePikachu + 1) % 4;
+    frameGengar = (frameGengar + 1) % 3;
 
+    ultimoFrame = SDL_GetTicks();
+}
         if (SDL_GetTicks() > ultimoFantasma + 300) {
             moverFantasmas();
             ultimoFantasma = SDL_GetTicks();
